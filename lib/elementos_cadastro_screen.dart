@@ -1,3 +1,4 @@
+import 'package:ac_app/Controllers/databasesqlite.dart';
 import 'package:ac_app/elemento_padding.dart';
 import 'package:flutter/material.dart';
 class ElementosCadastroScreen extends StatefulWidget {
@@ -14,6 +15,26 @@ class _ElementosCadastroScreenState extends State<ElementosCadastroScreen> {
   TextEditingController controlador_moradores = TextEditingController();
   TextEditingController controlador_animais = TextEditingController();
   TextEditingController controlador_vacinados = TextEditingController();
+
+  Future<void> salvarBanco() async {
+    String endereco = controlador_endereco.text;
+    String nome = controlador_nome.text;
+    int moradores = int.parse(controlador_moradores.text);
+    int animais = int.parse(controlador_animais.text);
+    int vacinados = int.parse(controlador_vacinados.text);
+    final database = await DatabaseSQLite().openConnection();
+    database.insert('cadastro', {'endereco': endereco, 'nome': nome, 'moradores': moradores, 'animais': animais, 'vacinados': vacinados});
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    _database();
+  }
+
+  Future<void> _database() async{
+    final database = await DatabaseSQLite().openConnection();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +58,7 @@ class _ElementosCadastroScreenState extends State<ElementosCadastroScreen> {
           height: 80,
           child: Padding(
             padding: const EdgeInsets.only(top: 20),
-            child: ElevatedButton.icon(onPressed: null, icon: Icon(Icons.save_alt), label: Text("Salvar")),
+            child: ElevatedButton.icon(onPressed: salvarBanco, icon: Icon(Icons.save_alt), label: Text("Salvar")),
           ),
         )
       ],
